@@ -52,7 +52,7 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
       {posts.map((post) => (
         <Link key={post.id} href={getLocalizedPath(`/blog/${post.slug}`, language)} className="block">
           <Card className="rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-white cursor-pointer h-full">
-            <Box className="relative w-full h-48">
+            <Box className="relative w-full aspect-[16/9]">
               <Image
                 src={post.image || "/images/posts/truck.jpg"}
                 alt={post.title}

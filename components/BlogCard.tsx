@@ -46,7 +46,7 @@ export default function BlogCard({
 
   return (
     <div className="flex gap-4 rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition">
-      <div className="relative h-28 w-36 flex-shrink-0 overflow-hidden rounded-md">
+      <div className="relative h-28 aspect-[16/9] flex-shrink-0 overflow-hidden rounded-md">
         <Image
           src={image}
           alt={title}

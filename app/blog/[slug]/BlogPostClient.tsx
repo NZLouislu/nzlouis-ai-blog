@@ -498,7 +498,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
       <Navbar />
       <Box className="w-full px-6 py-12 mx-auto max-w-[1200px] pt-20">
         {/* Hero Image */}
-        <div className="relative w-full h-96 mb-12 rounded-3xl overflow-hidden">
+        <div className="relative w-full aspect-[16/9] mb-12 rounded-3xl overflow-hidden">
           <Image
             src={post.image || "/images/posts/truck.jpg"}
             alt={post.title}
