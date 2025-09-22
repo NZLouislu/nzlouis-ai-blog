@@ -18,7 +18,7 @@ tags:
   - Python
 lang: "en"
 URL: "/2024/03/10/java-and-spring-in-depth-understanding"
-categories: [Backend]
+categories: [FullStack, Insights]
 ---
 
 ## 1. Evolution and Features of Java

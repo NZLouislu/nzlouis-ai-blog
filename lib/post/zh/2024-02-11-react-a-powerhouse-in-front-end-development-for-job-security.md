@@ -19,7 +19,7 @@ tags:
   - Hooks
   - 服务端渲染
 lang: "zh"
-categories: [Frontend]
+categories: [FullStack]
 ---
 
 ## 1. 引言

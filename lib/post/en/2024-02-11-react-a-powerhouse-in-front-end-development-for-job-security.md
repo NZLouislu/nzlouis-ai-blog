@@ -20,7 +20,7 @@ tags:
   - Hooks
   - Server-Side Rendering
 lang: "en"
-categories: [Frontend]
+categories: [FullStack]
 ---
 
 ## 1. Introduction

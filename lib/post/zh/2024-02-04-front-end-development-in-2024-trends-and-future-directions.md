@@ -21,7 +21,7 @@ tags:
   - React趋势
 lang: "zh"
 URL: "/2024/02/04/front-end-development-in-2024-trends-and-future-directions-cn/"
-categories: [Frontend]
+categories: [FullStack]
 ---
 
 ## 1. 引言

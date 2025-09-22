@@ -233,7 +233,9 @@ export const useStatsStore = create<StatsState>((set, get) => ({
   fetchPostStats: async (postId) => {
     try {
       const { language } = useLanguageStore.getState();
-      const response = await fetch(`/api/stats?postId=${postId}&language=${language}`);
+      const response = await fetch(
+        `/api/stats?postId=${postId}&language=${language}`
+      );
       if (response.ok) {
         const stats = await response.json();
         get().setPostStats(postId, stats);
@@ -250,17 +252,25 @@ export const useStatsStore = create<StatsState>((set, get) => ({
   ) => {
     try {
       set({ isLoading: true, error: null });
-      const userParam = userId ? `&userId=${userId}` : '';
+      const userParam = userId ? `&userId=${userId}` : "";
       const res = await fetch(
         `/api/stats?language=${language}&aggregate=${aggregate}${userParam}`
       );
       if (res.ok) {
         const data = await res.json();
-        console.log(`Fetched ${language} stats for user ${userId}:`, data);
-        set((state: StatsState) => ({
-          ...state,
-          [`${language}Stats`]: data,
-        }));
+        set((state: StatsState) => {
+          const currentStats = state[`${language}Stats`];
+          if (JSON.stringify(currentStats) !== JSON.stringify(data)) {
+            set((state: StatsState) => ({
+              ...state,
+              [`${language}Stats`]: data,
+            }));
+          }
+          return {
+            ...state,
+            [`${language}Stats`]: data,
+          };
+        });
       } else {
         set({ error: "Failed to fetch language stats" });
       }

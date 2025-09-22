@@ -18,7 +18,7 @@ tags:
   - Frontend Trends
 lang: "en"
 URL: "/2024/02/17/react-18-typescript-powerful-combination-frontend/"
-categories: [Frontend]
+categories: [FullStack]
 ---
 
 ## 1. Introduction to React

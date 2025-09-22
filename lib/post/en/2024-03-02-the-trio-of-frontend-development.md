@@ -20,7 +20,7 @@ tags:
   - Software Development
 lang: "en"
 URL: "/2024/03/02/the-trio-of-frontend-development"
-categories: [Frontend]
+categories: [FullStack]
 ---
 
 JavaScript, HTML, and CSS are the three most commonly used technologies in the field of frontend development, collectively forming the foundation of modern web pages. Despite their long history, these three technologies continue to play an indispensable role in web development. This article delves into the origins, history, current status, future trends, and the reasons why they remain crucial in today's development landscape.

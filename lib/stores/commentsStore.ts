@@ -153,7 +153,6 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
     const now = Date.now();
 
     if (now - lastFetchTime < COMMENT_COUNTS_CACHE_DURATION) {
-      console.log("Using cached comment counts");
       return;
     }
 
@@ -165,15 +164,12 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
       const response = await fetch("/api/admin/comments/count");
       if (response.ok) {
         const data = await response.json();
-        console.log("Fetched comment counts:", data);
         setCommentCounts(data);
         set({ lastFetchTime: now });
       } else {
-        console.log("Using mock comment counts");
         setCommentCounts(mockCommentCounts);
       }
     } catch (err) {
-      console.error("Failed to load comment counts:", err);
       setError("Failed to load comment counts");
       setCommentCounts(mockCommentCounts);
     } finally {
@@ -195,18 +191,11 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
     if (!forceRefresh && cachedComments[cacheKey]) {
       const cached = cachedComments[cacheKey];
       if (now - cached.timestamp < CACHE_DURATION) {
-        console.log("Using cached comments for:", postId, currentLanguage);
         setComments(cached.data);
         return;
       }
     }
 
-    console.log(
-      "Loading comments for post:",
-      postId,
-      "language:",
-      currentLanguage
-    );
     setLoadingComments(true);
     setError(null);
 
@@ -214,11 +203,9 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
       const response = await fetch(
         `/api/admin/comments?postId=${postId}&language=${currentLanguage}`
       );
-      console.log("Comments API response status:", response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Comments API response data:", data);
         setComments(data);
 
         set({
@@ -233,15 +220,12 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
         });
       } else {
         const errorText = await response.text();
-        console.error("Comments API error:", errorText);
-        console.log("Using mock comments");
         const fallbackComments = mockComments.filter(
           (c) => c.postId === postId
         );
         setComments(fallbackComments);
       }
     } catch (err) {
-      console.error("Failed to load comments:", err);
       setError("Failed to load comments");
       const fallbackComments = mockComments.filter((c) => c.postId === postId);
       setComments(fallbackComments);
