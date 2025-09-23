@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -14,8 +14,8 @@ interface TableOfContentsProps {
 
 export default function TableOfContents({ content }: TableOfContentsProps) {
   const [headings, setHeadings] = useState<TocItem[]>([]);
-  const [activeHeading, setActiveHeading] = useState<string>('');
-  const [tocHeight, setTocHeight] = useState<string>('max-h-96');
+  const [activeHeading, setActiveHeading] = useState<string>("");
+  const [tocHeight, setTocHeight] = useState<string>("max-h-96");
 
   useEffect(() => {
     const extractHeadings = (content: string): TocItem[] => {
@@ -28,9 +28,9 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
         const text = match[2].trim();
         const id = text
           .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
           .trim();
 
         headings.push({
@@ -50,18 +50,18 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
     const updateTocHeight = () => {
       const isMobile = window.innerWidth < 768;
       if (!isMobile) {
-        // 非手机用户：屏幕高度减去 32px (上下各 16px)
+        // Non-mobile users: screen height minus 32px (16px each for top and bottom)
         const availableHeight = window.innerHeight - 32;
         setTocHeight(`max-h-[${availableHeight}px]`);
       } else {
-        // 手机用户：保持原有高度
-        setTocHeight('max-h-96');
+        // Mobile users: keep original height
+        setTocHeight("max-h-96");
       }
     };
 
     updateTocHeight();
-    window.addEventListener('resize', updateTocHeight);
-    return () => window.removeEventListener('resize', updateTocHeight);
+    window.addEventListener("resize", updateTocHeight);
+    return () => window.removeEventListener("resize", updateTocHeight);
   }, []);
 
   const scrollToHeading = (id: string) => {
@@ -76,11 +76,11 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
 
       // Clear active state after animation
-      setTimeout(() => setActiveHeading(''), 1000);
+      setTimeout(() => setActiveHeading(""), 1000);
     }
   };
 
@@ -98,15 +98,20 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
             onClick={() => scrollToHeading(heading.id)}
             className={`block text-left text-sm hover:text-blue-600 transition-all duration-200 py-1 rounded px-2 ${
               activeHeading === heading.id
-                ? 'bg-blue-50 text-blue-700 font-medium'
-                : 'hover:bg-gray-50'
+                ? "bg-blue-50 text-blue-700 font-medium"
+                : "hover:bg-gray-50"
             } ${
-              heading.level === 1 ? 'font-semibold' :
-              heading.level === 2 ? 'font-medium ml-2' :
-              heading.level === 3 ? 'ml-4' :
-              heading.level === 4 ? 'ml-6' :
-              heading.level === 5 ? 'ml-8' :
-              'ml-10'
+              heading.level === 1
+                ? "font-semibold"
+                : heading.level === 2
+                ? "font-medium ml-2"
+                : heading.level === 3
+                ? "ml-4"
+                : heading.level === 4
+                ? "ml-6"
+                : heading.level === 5
+                ? "ml-8"
+                : "ml-10"
             }`}
           >
             {heading.text}

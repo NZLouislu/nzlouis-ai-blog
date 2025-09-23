@@ -1,16 +1,5 @@
 import { create } from "zustand";
 
-interface Comment {
-  id: string;
-  post_id: string;
-  name: string | null;
-  email: string | null;
-  comment: string;
-  is_anonymous: boolean;
-  created_at: string;
-  language: string;
-}
-
 interface TableData {
   table: string;
   count?: number;

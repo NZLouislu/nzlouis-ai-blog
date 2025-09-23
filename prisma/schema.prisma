@@ -117,14 +117,17 @@ model DailyStat {
 }
 
 model FeatureToggle {
-  id      String @id @default(cuid())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  key     String
-  enabled Boolean @default(false)
-  payload String?
+  id              String    @id @default(uuid())
+  user_id         String
+  user            User      @relation(fields: [user_id], references: [id])
+  total_views     Boolean   @default(true)
+  total_likes     Boolean   @default(true)
+  total_comments  Boolean   @default(true)
+  ai_summaries    Boolean   @default(true)
+  ai_questions    Boolean   @default(true)
+  home_statistics Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
 
-  @@unique([userId, key])
-  @@index([userId])
   @@map("feature_toggles")
 }

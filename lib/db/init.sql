@@ -15,13 +15,14 @@ CREATE TABLE feature_toggles (
   total_comments BOOLEAN DEFAULT true,
   ai_summaries BOOLEAN DEFAULT true,
   ai_questions BOOLEAN DEFAULT true,
+  home_statistics BOOLEAN DEFAULT true,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Insert default values for feature_toggles
-INSERT INTO feature_toggles (total_views, total_likes, total_comments, ai_summaries, ai_questions)
-VALUES (true, true, true, true, true);
+INSERT INTO feature_toggles (total_views, total_likes, total_comments, ai_summaries, ai_questions, home_statistics)
+VALUES (true, true, true, true, true, true);
 
 -- Create updated_at trigger function (drop if exists first)
 DROP FUNCTION IF EXISTS update_updated_at_column();
@@ -77,7 +78,7 @@ CREATE TABLE daily_stats (
   ai_summaries INTEGER DEFAULT 0,
   UNIQUE(post_id, date)
 );
-i
+
 -- Insert sample post stats data
 INSERT INTO post_stats (post_id, title, views, likes, ai_questions, ai_summaries) VALUES
 ('2024-03-10-java-and-spring-in-depth-understanding', 'Java and Spring: In-Depth Analysis and Comprehensive Understanding', 150, 25, 8, 12),
