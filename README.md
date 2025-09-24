@@ -1,4 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NZLouis' Blog
+
+Hi, I'm Louis Lu – NZLouis is my personal brand.
+
+A full-stack Software Engineer & AI specialist with 10+ years of experience delivering efficient, scalable systems across industries. I bridge software engineering and applied machine learning, from project planning to coding, testing, deployment, and ongoing optimization.
+
+Open to remote roles in the US or Australia as an AI / ML / Full-Stack Engineer.
+
+Proven ability to align seamlessly with US and AU business hours from New Zealand.
+
+## About This Blog
+
+This is my personal blog built with Next.js, showcasing my expertise in full-stack development and AI/ML technologies. The blog features:
+
+- **Multi-language Support**: Content available in both English and Chinese
+- **AI-Powered Features**: Including AI summary generation and Q&A assistant
+- **Advanced Analytics**: Real-time statistics and data visualization
+- **Modern Architecture**: Built with cutting-edge technologies and best practices
+
+## Live Demo
+
+You can view the actual blog content at [blog.nzlouis.com](https://blog.nzlouis.com) and manage the blog through the admin panel at [/admin](https://blog.nzlouis.com/admin) to see statistics and manage comments.
+
+## Technical Highlights
+
+- **Frontend**: React, Next.js, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Supabase
+- **AI/ML**: Integration with various AI models for content summarization and assistance
+- **Database**: PostgreSQL with Prisma ORM
+- **Deployment**: Vercel
+
+## Key Features
+
+- **Content Management**: Markdown-based blogging system with TOC generation
+- **Admin Dashboard**: Comprehensive admin panel for blog management
+- **Feature Toggles**: Dynamic feature control system
+- **Comment System**: Interactive reader engagement platform
+- **Responsive Design**: Fully responsive UI that works on all devices
+
+## Professional Experience
+
+With over a decade of experience in software engineering, I've successfully delivered projects across various domains including:
+
+- Enterprise-level web applications
+- Machine learning model deployment
+- Cloud-native solutions
+- Data analytics platforms
+- E-commerce systems
+
+## Contact
+
+I'm currently seeking remote opportunities in the US or Australia. Feel free to reach out if you have any suitable positions or collaborations.
 
 ## Getting Started
 
@@ -17,17 +68,6 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
 ## Deploy on Vercel
 
