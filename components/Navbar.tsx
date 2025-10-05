@@ -180,35 +180,35 @@ export default function Navbar() {
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
                   <Link
-                    href={getLocalizedPath("/blog/category/backend", language)}
+                    href={getLocalizedPath("/blog/category/ai", language)}
                     className={linkCls(
-                      normalizedPath.startsWith("/blog/category/backend")
+                      normalizedPath.startsWith("/blog/category/ai")
                     )}
                     onClick={() => setOpen(false)}
                   >
-                    {language === "en" ? "Backend" : "后端"}
+                    {language === "en" ? "AI" : "人工智能"}
                   </Link>
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
                   <Link
-                    href={getLocalizedPath("/blog/category/frontend", language)}
+                    href={getLocalizedPath("/blog/category/fullstack", language)}
                     className={linkCls(
-                      normalizedPath.startsWith("/blog/category/frontend")
+                      normalizedPath.startsWith("/blog/category/fullstack")
                     )}
                     onClick={() => setOpen(false)}
                   >
-                    {language === "en" ? "Frontend" : "前端"}
+                    {language === "en" ? "FullStack" : "全栈"}
                   </Link>
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
                   <Link
-                    href={getLocalizedPath("/blog/category/life", language)}
+                    href={getLocalizedPath("/blog/category/insights", language)}
                     className={linkCls(
-                      normalizedPath.startsWith("/blog/category/life")
+                      normalizedPath.startsWith("/blog/category/insights")
                     )}
                     onClick={() => setOpen(false)}
                   >
-                    {language === "en" ? "Life" : "生活"}
+                    {language === "en" ? "Insights" : "见解"}
                   </Link>
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
