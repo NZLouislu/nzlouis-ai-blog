@@ -580,6 +580,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
             src={post.image || "/images/posts/truck.jpg"}
             alt={post.title}
             fill
+            sizes="100vw"
             className="object-cover"
             priority
           />

@@ -10,6 +10,7 @@ export default function Banner() {
           src="/img/background.png"
           alt="Banner"
           fill
+          sizes="100vw"
           priority
           className="object-cover object-center"
         />

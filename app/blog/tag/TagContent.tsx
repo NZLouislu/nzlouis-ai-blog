@@ -61,6 +61,7 @@ export default function TagContent({ tag, posts, language }: TagContentProps) {
                         src={post.image || "/images/posts/truck.jpg"}
                         alt={post.title}
                         fill
+                        sizes="(min-width: 768px) 50vw, 100vw"
                         className="object-cover"
                       />
                     </Box>

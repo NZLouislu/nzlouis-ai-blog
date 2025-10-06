@@ -64,6 +64,7 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
                 src={post.image || "/images/posts/truck.jpg"}
                 alt={post.title}
                 fill
+                sizes="(min-width: 768px) 50vw, 100vw"
                 className="object-cover"
               />
             </Box>

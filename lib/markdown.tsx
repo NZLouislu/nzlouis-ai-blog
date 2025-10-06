@@ -28,6 +28,7 @@ export default function Markdown({ content }: { content: string }) {
                     src={src}
                     alt={alt || ''}
                     fill
+                    sizes="100vw"
                     className="rounded-lg shadow-md object-cover"
                   />
                 </div>

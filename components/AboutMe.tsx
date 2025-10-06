@@ -12,6 +12,7 @@ export default function AboutMe() {
           src="/images/authors/LouisLu.png"
           alt="NZLouis"
           fill
+          sizes="200px"
           className="object-cover"
         />
         <Avatar.Fallback className="text-gray-600 flex items-center justify-center h-full w-full text-2xl">
