@@ -1,5 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, PostgrestError } from '@supabase/supabase-js';
+
+interface Comment {
+  id: string;
+  postId: string;
+  authorName: string | null;
+  authorEmail: string | null;
+  content: string;
+  is_anonymous: boolean;
+  createdAt: string;
+}
+
+interface RawComment {
+  id: string;
+  postId: string;
+  authorName?: string;
+  authorname?: string;
+  authorEmail?: string;
+  authoremail?: string;
+  content: string;
+  is_anonymous: boolean;
+  createdAt: string;
+}
 
 const supabase = createClient(
   process.env.SUPABASE_URL!,
@@ -16,8 +38,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
     }
 
-    let comments: any[] = [];
-    let error: any = null;
+    let comments: RawComment[] = [];
+    let error: PostgrestError | null = null;
 
     const camelRes = await supabase
       .from('comments')
@@ -33,7 +55,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
     }
 
-    const normalized = (comments || []).map((c: any) => ({
+    const normalized = (comments || []).map((c: RawComment) => ({
       id: c.id,
       postId: c.postId,
       authorName: c.authorName ?? c.authorname ?? null,
@@ -42,7 +64,7 @@ export async function GET(request: NextRequest) {
       is_anonymous: c.is_anonymous,
       createdAt: c.createdAt
     }));
-    normalized.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    normalized.sort((a: Comment, b: Comment) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     return NextResponse.json(normalized);
   } catch (error) {
     console.error('Comments API error:', error);
@@ -62,11 +84,11 @@ export async function POST(request: NextRequest) {
     console.log('Attempting to save to Supabase...');
     const startTime = Date.now();
 
-    let newComment: any = null;
-    let insertError: any = null;
+    let newComment: RawComment | null = null;
+    let insertError: PostgrestError | null = null;
 
     // Check if post exists before inserting comment
-    const { data: postExists, error: postError } = await supabase
+    const { error: postError } = await supabase
       .from('posts')
       .select('id')
       .eq('id', postId)
@@ -182,13 +204,13 @@ export async function POST(request: NextRequest) {
     console.log(`Database operation completed in ${endTime - startTime}ms`);
 
     return NextResponse.json({
-      id: newComment.id,
-      postId: newComment.postId,
-      authorName: newComment.authorName ?? newComment.authorname ?? null,
-      authorEmail: newComment.authorEmail ?? newComment.authoremail ?? null,
-      content: newComment.content,
-      is_anonymous: newComment.is_anonymous,
-      createdAt: newComment.createdAt
+      id: newComment!.id,
+      postId: newComment!.postId,
+      authorName: newComment!.authorName ?? newComment!.authorname ?? null,
+      authorEmail: newComment!.authorEmail ?? newComment!.authoremail ?? null,
+      content: newComment!.content,
+      is_anonymous: newComment!.is_anonymous,
+      createdAt: newComment!.createdAt
     });
   } catch (error) {
     console.error('Comments API error:', error);

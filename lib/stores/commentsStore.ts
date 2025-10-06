@@ -170,6 +170,7 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
         setCommentCounts(mockCommentCounts);
       }
     } catch (err) {
+      console.error("Failed to load comment counts:", err);
       setError("Failed to load comment counts");
       setCommentCounts(mockCommentCounts);
     } finally {
@@ -219,13 +220,13 @@ export const useCommentsStore = create<CommentsState>((set, get) => ({
           },
         });
       } else {
-        const errorText = await response.text();
         const fallbackComments = mockComments.filter(
           (c) => c.postId === postId
         );
         setComments(fallbackComments);
       }
     } catch (err) {
+      console.error("Failed to load comments:", err);
       setError("Failed to load comments");
       const fallbackComments = mockComments.filter((c) => c.postId === postId);
       setComments(fallbackComments);

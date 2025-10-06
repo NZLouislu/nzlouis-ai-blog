@@ -20,6 +20,7 @@ async function getUserId() {
 
     return "user_default";
   } catch (error) {
+    console.error("Error getting user ID:", error);
     return "user_default";
   }
 }
@@ -92,54 +93,6 @@ export async function GET() {
   }
 }
 
-// Add a helper function to execute raw SQL queries
-async function executeRawUpdate(
-  userId: string,
-  updateData: Record<string, boolean | string>
-) {
-  try {
-    // Build SET clauses
-    const setClauses = [];
-    const values = [];
-    let index = 1;
-
-    for (const [key, value] of Object.entries(updateData)) {
-      if (key !== "user_id" && key !== "id") {
-        // Exclude primary key and user ID
-        setClauses.push(`${key} = $${index}`);
-        values.push(value);
-        index++;
-      }
-    }
-
-    // Add timestamp
-    setClauses.push(`updated_at = $${index}`);
-    values.push(new Date().toISOString());
-
-    const query = `
-      UPDATE feature_toggles 
-      SET ${setClauses.join(", ")} 
-      WHERE user_id = $${index + 1}
-    `;
-
-    values.push(userId);
-
-    console.log("Executing raw query:", query, "with values:", values);
-
-    // Note: Supabase JavaScript client does not directly support raw SQL updates
-    // We need to use RPC functions or execute directly through Supabase SQL editor
-
-    // As an alternative, we try to use the existing update method but capture and handle specific errors
-    const { data, error } = await supabase
-      .from("feature_toggles")
-      .update(updateData)
-      .eq("user_id", userId);
-
-    return { data, error };
-  } catch (error) {
-    return { data: null, error: error as Error };
-  }
-}
 
 export async function POST(request: NextRequest) {
   try {
