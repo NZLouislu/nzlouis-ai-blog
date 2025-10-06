@@ -28,7 +28,7 @@ interface Comment {
 function CommentsSection({ postId }: { postId: string }) {
   const { language } = useLanguageStore();
   const { t } = useTranslation();
-  const { incrementComments } = useStatsStore();
+  const { incrementComments, fetchPostStats } = useStatsStore();
   const [comments, setComments] = useState<Comment[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
@@ -115,6 +115,7 @@ function CommentsSection({ postId }: { postId: string }) {
             language: language,
           }),
         });
+        await fetchPostStats(postId);
       } else {
         // Revert optimistic update on failure
         incrementComments(postId, true);

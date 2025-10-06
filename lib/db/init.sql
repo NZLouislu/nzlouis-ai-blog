@@ -6,6 +6,36 @@ DROP TABLE IF EXISTS daily_stats;
 DROP TABLE IF EXISTS post_stats;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS feature_toggles;
+DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS users;
+
+-- Create users table
+CREATE TABLE users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'user',
+  avatarUrl TEXT,
+  languagePreferences TEXT NOT NULL DEFAULT 'both',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create posts table
+CREATE TABLE posts (
+  id TEXT PRIMARY KEY,
+  authorId TEXT NOT NULL REFERENCES users(id),
+  slug TEXT NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL,
+  language TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'published',
+  publishedAt TIMESTAMP WITH TIME ZONE,
+  coverImage TEXT,
+  tags TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
 -- Create feature_toggles table
 CREATE TABLE feature_toggles (
@@ -47,11 +77,14 @@ CREATE TRIGGER update_feature_toggles_updated_at
 CREATE TABLE comments (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   post_id TEXT NOT NULL,
-  name TEXT,
-  email TEXT,
-  comment TEXT NOT NULL,
+  authorName TEXT,
+  authorEmail TEXT,
+  content TEXT NOT NULL,
   is_anonymous BOOLEAN DEFAULT false,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  language TEXT DEFAULT 'en',
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  CONSTRAINT comments_post_id_fkey FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 ALTER TABLE comments DISABLE ROW LEVEL SECURITY;
@@ -64,7 +97,9 @@ CREATE TABLE post_stats (
   views INTEGER DEFAULT 0,
   likes INTEGER DEFAULT 0,
   ai_questions INTEGER DEFAULT 0,
-  ai_summaries INTEGER DEFAULT 0
+  ai_summaries INTEGER DEFAULT 0,
+  language TEXT DEFAULT 'en',
+  comments INTEGER DEFAULT 0
 );
 
 -- Create daily_stats table
@@ -76,8 +111,29 @@ CREATE TABLE daily_stats (
   likes INTEGER DEFAULT 0,
   ai_questions INTEGER DEFAULT 0,
   ai_summaries INTEGER DEFAULT 0,
-  UNIQUE(post_id, date)
+  language TEXT DEFAULT 'en',
+  userId TEXT DEFAULT 'nzlouis',
+  pageViews INTEGER DEFAULT 0,
+  uniqueVisitors INTEGER DEFAULT 0,
+  reads INTEGER DEFAULT 0,
+  comments INTEGER DEFAULT 0,
+  UNIQUE(post_id, date, language)
 );
+CREATE INDEX IF NOT EXISTS daily_stats_userId_date_idx ON daily_stats(userId, date);
+ALTER TABLE daily_stats DROP CONSTRAINT IF EXISTS daily_stats_userId_fkey;
+ALTER TABLE daily_stats ADD CONSTRAINT daily_stats_userId_fkey FOREIGN KEY (userId) REFERENCES public.users(id) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- Insert sample posts data
+INSERT INTO posts (id, authorId, slug, title, content, language, status, tags) VALUES
+('2024-03-10-java-and-spring-in-depth-understanding', (SELECT id FROM users LIMIT 1), 'java-and-spring-in-depth-understanding', 'Java and Spring: In-Depth Analysis and Comprehensive Understanding', 'Java and Spring content...', 'en', 'published', 'Java,Spring,Programming'),
+('2024-03-02-the-trio-of-frontend-development', (SELECT id FROM users LIMIT 1), 'the-trio-of-frontend-development', 'The Trio of Frontend Development', 'Frontend content...', 'en', 'published', 'Frontend,JavaScript,HTML,CSS'),
+('2024-02-24-backend-tech-the-foundation-of-software', (SELECT id FROM users LIMIT 1), 'backend-tech-the-foundation-of-software', 'Backend Tech: The Foundation of Software', 'Backend content...', 'en', 'published', 'Backend,Technology'),
+('2024-02-17-react-18-typescript-powerful-combination-frontend', (SELECT id FROM users LIMIT 1), 'react-18-typescript-powerful-combination-frontend', 'React 18 & TypeScript: Powerful Combination for Frontend', 'React content...', 'en', 'published', 'React,TypeScript,Frontend'),
+('2024-02-11-react-a-powerhouse-in-front-end-development-for-job-security', (SELECT id FROM users LIMIT 1), 'react-a-powerhouse-in-front-end-development-for-job-security', 'React: A Powerhouse in Front-End Development for Job Security', 'React job security content...', 'en', 'published', 'React,Frontend,Career'),
+('2024-02-04-front-end-development-in-2024-trends-and-future-directions', (SELECT id FROM users LIMIT 1), 'front-end-development-in-2024-trends-and-future-directions', 'Front-End Development in 2024: Trends and Future Directions', 'Frontend trends content...', 'en', 'published', 'Frontend,Trends'),
+('2024-01-28-microservices-architecture-empowering-online-banking-services', (SELECT id FROM users LIMIT 1), 'microservices-architecture-empowering-online-banking-services', 'Microservices Architecture: Empowering Online Banking Services', 'Microservices content...', 'en', 'published', 'Microservices,Architecture,Banking'),
+('2024-01-20-new_zealand_paradise_for_children', (SELECT id FROM users LIMIT 1), 'new-zealand-paradise-for-children', 'New Zealand: Paradise for Children', 'New Zealand content...', 'en', 'published', 'NewZealand,Travel'),
+('2024-01-10-will-ai-replace-human-developers', (SELECT id FROM users LIMIT 1), 'will-ai-replace-human-developers', 'Will AI Replace Human Developers?', 'AI content...', 'en', 'published', 'AI,Development');
 
 -- Insert sample post stats data
 INSERT INTO post_stats (post_id, title, views, likes, ai_questions, ai_summaries) VALUES

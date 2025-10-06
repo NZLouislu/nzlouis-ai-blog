@@ -22,11 +22,12 @@ export async function GET(request: NextRequest) {
         .eq("language", language || "en")
         .single();
 
-      const { count: commentCount } = await supabase
-        .from("comments")
-        .select("*", { count: "exact", head: true })
+      const { data: commentsStat } = await supabase
+        .from("post_stats")
+        .select("comments")
         .eq("post_id", postId)
-        .eq("language", language || "en");
+        .eq("language", language || "en")
+        .single();
 
       if (statsError && statsError.code !== "PGRST116") {
         console.error("Stats error:", statsError);
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       const defaultStats = {
         views: 1,
         likes: 1,
-        comments: commentCount || 0,
+        comments: commentsStat?.comments || 0,
         ai_questions: 1,
         ai_summaries: 0,
       };
@@ -66,7 +67,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         views: stats.views,
         likes: stats.likes,
-        comments: commentCount || 0,
+        comments: stats.comments || 0,
         ai_questions: stats.ai_questions,
         ai_summaries: stats.ai_summaries || 0,
       });
@@ -103,11 +104,8 @@ export async function GET(request: NextRequest) {
         });
       }
 
-      const { count: totalComments } = await supabase
-        .from("comments")
-        .select("*", { count: "exact", head: true })
-        .in("post_id", postIds)
-        .eq("language", language);
+      const totalComments =
+        stats?.reduce((sum, stat) => sum + (stat.comments || 0), 0) || 0;
 
       const totalViews =
         stats?.reduce((sum, stat) => sum + (stat.views || 0), 0) || 0;
@@ -160,10 +158,13 @@ export async function GET(request: NextRequest) {
       const totalAiSummaries =
         stats?.reduce((sum, stat) => sum + (stat.ai_summaries || 0), 0) || 0;
 
-      const { count: totalComments } = await supabase
-        .from("comments")
-        .select("*", { count: "exact", head: true })
+      const { data: allStats } = await supabase
+        .from("post_stats")
+        .select("comments")
         .eq("language", language || "en");
+
+      const totalComments =
+        allStats?.reduce((sum, stat) => sum + (stat.comments || 0), 0) || 0;
 
       const enPosts = listPublished("en");
       const zhPosts = listPublished("zh");
@@ -443,8 +444,6 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === "comment") {
-      // Comment action doesn't need to update post_stats or daily_stats
-      // Comments are counted separately via the comments table
       return NextResponse.json({ success: true });
     }
 
