@@ -3,7 +3,7 @@ layout: post
 title: "AI Project Starting Point: From AI Quiz to Productization Practice"
 subtitle: "A Path from Zero to Productization Using AI Quiz as an Example"
 description: "Why do most AI applications find it hard to surpass ChatGPT? Using AI Quiz as a practice case, this article analyzes key strategies from topic selection, implementation to productization."
-date: 2025-10-30
+date: 2025-11-01
 author: "Louis Lu"
 image: "/img/ai-quiz.png"
 published: true
@@ -18,7 +18,7 @@ tags:
   - Google Gemini
   - OpenRouter
 lang: "en"
-URL: "/2025/10/30/ai-quiz-to-productization-practice"
+URL: "/2025/11/01/ai-quiz-to-productization-practice"
 categories: [AI, PROJECT]
 ---
 

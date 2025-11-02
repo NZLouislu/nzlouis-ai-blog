@@ -3,7 +3,7 @@ layout: post
 title: "AI 项目起点：从 AI Quiz 到产品化实践"
 subtitle: "以 AI Quiz 为例的从零到产品化路径"
 description: "为何多数 AI 应用难以超越 ChatGPT？以 AI Quiz 为实践案例，解析从选题、实现到产品化的关键策略。"
-date: 2025-10-30
+date: 2025-11-01
 author: "Louis Lu"
 image: "/img/ai-quiz.png"
 published: true
@@ -18,7 +18,7 @@ tags:
   - Google Gemini
   - OpenRouter
 lang: "zh"
-URL: "/2025/10/30/ai-quiz-to-productization-practice"
+URL: "/2025/11/01/ai-quiz-to-productization-practice"
 categories: [AI, PROJECT]
 ---
 
