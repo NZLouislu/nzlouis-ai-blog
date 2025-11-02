@@ -2,7 +2,6 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
-import Image from 'next/image';
 
 function generateHeadingId(text: string): string {
   return text
@@ -23,15 +22,7 @@ export default function Markdown({ content }: { content: string }) {
           img: ({ src, alt }) => {
             if (typeof src === 'string') {
               return (
-                <div className="relative w-full h-48 my-4">
-                  <Image
-                    src={src}
-                    alt={alt || ''}
-                    fill
-                    sizes="100vw"
-                    className="rounded-lg shadow-md object-cover"
-                  />
-                </div>
+                <img src={src} alt={alt || ''} className="w-full h-auto my-4 rounded-lg shadow-md" />
               );
             }
             return null;

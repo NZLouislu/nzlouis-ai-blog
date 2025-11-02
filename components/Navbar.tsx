@@ -68,6 +68,16 @@ export default function Navbar() {
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
                   <Link
+                    href={getLocalizedPath("/blog/category/project", language)}
+                    className={linkCls(
+                      normalizedPath.startsWith("/blog/category/project")
+                    )}
+                  >
+                    {language === "en" ? "Project" : "项目"}
+                  </Link>
+                </NavigationMenu.Item>
+                <NavigationMenu.Item>
+                  <Link
                     href={getLocalizedPath(
                       "/blog/category/fullstack",
                       language
@@ -187,6 +197,17 @@ export default function Navbar() {
                     onClick={() => setOpen(false)}
                   >
                     {language === "en" ? "AI" : "人工智能"}
+                  </Link>
+                </NavigationMenu.Item>
+                <NavigationMenu.Item>
+                  <Link
+                    href={getLocalizedPath("/blog/category/project", language)}
+                    className={linkCls(
+                      normalizedPath.startsWith("/blog/category/project")
+                    )}
+                    onClick={() => setOpen(false)}
+                  >
+                    {language === "en" ? "Project" : "项目"}
                   </Link>
                 </NavigationMenu.Item>
                 <NavigationMenu.Item>
