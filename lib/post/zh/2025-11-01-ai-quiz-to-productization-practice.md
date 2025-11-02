@@ -19,7 +19,7 @@ tags:
   - OpenRouter
 lang: "zh"
 URL: "/2025/10/30/ai-quiz-to-productization-practice"
-categories: [PROJECT]
+categories: [AI, PROJECT]
 ---
 
 ## 1. 引言
