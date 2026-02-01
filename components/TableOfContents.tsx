@@ -89,30 +89,28 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
   }
 
   return (
-    <div className="sticky top-8 bg-white rounded-2xl shadow-lg p-6">
-      <h3 className="text-lg font-semibold mb-4">Table of Contents</h3>
+    <div className="sticky top-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl shadow-lg p-6">
+      <h3 className="text-lg font-semibold mb-4 dark:text-gray-100">Table of Contents</h3>
       <nav className={`space-y-2 overflow-y-auto ${tocHeight}`}>
         {headings.map((heading, index) => (
           <button
             key={index}
             onClick={() => scrollToHeading(heading.id)}
-            className={`block text-left text-sm hover:text-blue-600 transition-all duration-200 py-1 rounded px-2 ${
-              activeHeading === heading.id
-                ? "bg-blue-50 text-blue-700 font-medium"
-                : "hover:bg-gray-50"
-            } ${
-              heading.level === 1
-                ? "font-semibold"
+            className={`block text-left text-sm hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-200 py-1 rounded px-2 ${activeHeading === heading.id
+              ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-semibold"
+              : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+              } ${heading.level === 1
+                ? "font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider text-xs mb-1 mt-2 first:mt-0"
                 : heading.level === 2
-                ? "font-medium ml-2"
-                : heading.level === 3
-                ? "ml-4"
-                : heading.level === 4
-                ? "ml-6"
-                : heading.level === 5
-                ? "ml-8"
-                : "ml-10"
-            }`}
+                  ? "font-semibold ml-2"
+                  : heading.level === 3
+                    ? "font-medium ml-4"
+                    : heading.level === 4
+                      ? "ml-6"
+                      : heading.level === 5
+                        ? "ml-8"
+                        : "ml-10"
+              }`}
           >
             {heading.text}
           </button>

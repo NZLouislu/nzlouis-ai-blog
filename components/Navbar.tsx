@@ -17,15 +17,14 @@ export default function Navbar() {
   const normalizedPath = pathname.replace(/^\/cn/, "");
 
   const linkCls = (isActive: boolean) =>
-    `relative pb-1 text-sm md:text-base font-medium transition-colors hover:text-indigo-600 ${
-      isActive
-        ? "text-indigo-600 font-bold after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-indigo-600 after:animate-underline"
-        : "text-gray-700"
+    `relative pb-1 text-sm md:text-base font-medium transition-colors hover:text-indigo-600 ${isActive
+      ? "text-indigo-600 font-bold after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-indigo-600 after:animate-underline"
+      : "text-gray-700 dark:text-gray-300"
     }`;
 
   return (
     <>
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+      <nav className="sticky top-0 z-40 bg-white/80 dark:bg-black/80 backdrop-blur border-b border-slate-200 dark:border-slate-800">
         <div className="mx-auto flex max-w-[1200px] items-center px-6 py-3">
           <Link
             href={getLocalizedPath("/", language)}
@@ -133,7 +132,7 @@ export default function Navbar() {
                     href="https://nzlouis.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm md:text-base font-medium text-gray-700 hover:text-indigo-600 transition-colors"
+                    className="text-sm md:text-base font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition-colors"
                   >
                     {language === "en" ? "About me" : "关于我"}
                   </a>
@@ -158,7 +157,7 @@ export default function Navbar() {
                       setLanguage(newLang);
                       router.push(newPath);
                     }}
-                    className="text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors"
+                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 transition-colors"
                   >
                     {language === "en" ? "中文" : "English"}
                   </button>
@@ -169,14 +168,14 @@ export default function Navbar() {
 
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 text-gray-700 hover:text-blue-600 focus:outline-none"
+            className="md:hidden p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 focus:outline-none"
           >
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
         {open && (
-          <div className="md:hidden border-t border-slate-200 bg-white/95">
+          <div className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-black/95">
             <NavigationMenu.Root>
               <NavigationMenu.List className="flex flex-col gap-4 p-4">
                 <NavigationMenu.Item>
@@ -257,7 +256,7 @@ export default function Navbar() {
                     href="https://nzlouis.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block text-sm font-medium text-gray-700 hover:text-indigo-600"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600"
                     onClick={() => setOpen(false)}
                   >
                     {language === "en" ? "About me" : "关于我"}
@@ -284,7 +283,7 @@ export default function Navbar() {
                       router.push(newPath);
                       setOpen(false);
                     }}
-                    className="block text-sm font-medium text-gray-700 hover:text-indigo-600 text-left"
+                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-indigo-600 text-left"
                   >
                     {language === "en" ? "中文" : "English"}
                   </button>

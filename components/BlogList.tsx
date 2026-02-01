@@ -58,7 +58,7 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
           href={getLocalizedPath(`/blog/${post.slug}`, language)}
           className="block"
         >
-          <Card className="rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-white cursor-pointer h-full">
+          <Card className="rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-white dark:bg-gray-900 border border-transparent dark:border-gray-800 cursor-pointer h-full">
             <Box className="relative w-full aspect-[16/9]">
               <Image
                 src={post.image || "/images/posts/truck.jpg"}
@@ -70,8 +70,8 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
             </Box>
 
             <Box className="p-4 space-y-3 flex-1 flex flex-col">
-              <h3 className="text-xl font-bold line-clamp-2">{post.title}</h3>
-              <Text size="3" color="gray">
+              <h3 className="text-xl font-bold line-clamp-2 dark:text-gray-100">{post.title}</h3>
+              <Text size="3" color="gray" className="dark:text-gray-400">
                 {new Date(post.createdAt).toLocaleDateString(
                   language === "zh" ? "zh-CN" : "en-US",
                   {
@@ -80,9 +80,9 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
                     day: "numeric",
                   }
                 )}
-                <span className="text-gray-500"> • 5 min read</span>
+                <span className="text-gray-500 dark:text-gray-500"> • 5 min read</span>
               </Text>
-              <Text size="3" color="gray" className="line-clamp-3 flex-1">
+              <Text size="3" color="gray" className="line-clamp-3 flex-1 dark:text-gray-300">
                 {post.excerpt}
               </Text>
 
@@ -94,10 +94,10 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
                     radius="full"
                     className="w-5 h-5 shrink-0"
                   />
-                  <span className="text-sm">{post.author || "Louis Lu"}</span>
+                  <span className="text-sm dark:text-gray-300">{post.author || "Louis Lu"}</span>
                 </div>
                 {postStats[post.id] && (
-                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                  <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                     {toggles.totalViews && (
                       <div className="flex items-center gap-1">
                         <svg

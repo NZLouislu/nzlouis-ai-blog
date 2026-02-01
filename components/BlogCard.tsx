@@ -45,7 +45,7 @@ export default function BlogCard({
   const stats = postStats[postId];
 
   return (
-    <div className="flex gap-4 rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition">
+    <div className="flex gap-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/50 p-4 shadow-sm hover:shadow-md transition backdrop-blur-sm">
       <div className="relative h-28 aspect-[16/9] flex-shrink-0 overflow-hidden rounded-md">
         <Image
           src={image}
@@ -61,10 +61,10 @@ export default function BlogCard({
         <div>
           <Link href={getLocalizedPath(`/blog/${slug}`, language)} passHref>
             <a className="block">
-              <h3 className="text-xl font-bold hover:underline">{title}</h3>
+              <h3 className="text-xl font-bold hover:underline dark:text-gray-100">{title}</h3>
             </a>
           </Link>
-          <p className="mt-1 text-sm text-gray-600">{summary}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{summary}</p>
         </div>
 
         <div className="mt-3 flex items-center justify-between">
@@ -79,11 +79,11 @@ export default function BlogCard({
                 {author.name[0]}
               </Avatar.Fallback>
             </Avatar.Root>
-            <span className="text-sm text-gray-700">{author.name}</span>
-            <span className="text-xs text-gray-400">· {date}</span>
+            <span className="text-sm text-gray-700 dark:text-gray-300">{author.name}</span>
+            <span className="text-xs text-gray-400 dark:text-gray-500">· {date}</span>
           </div>
           {stats && (
-            <div className="flex items-center gap-3 text-xs text-gray-500">
+            <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
               {toggles.totalViews && (
                 <div className="flex items-center gap-1">
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

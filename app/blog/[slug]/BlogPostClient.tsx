@@ -145,9 +145,9 @@ function CommentsSection({ postId }: { postId: string }) {
   };
 
   return (
-    <div className="mt-12 pt-8 border-t border-gray-200">
+    <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-2xl font-bold text-gray-900">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           {t("comments")} ({comments.length})
         </h3>
         <button
@@ -161,11 +161,11 @@ function CommentsSection({ postId }: { postId: string }) {
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="mb-8 p-6 bg-gray-50 rounded-lg"
+          className="mb-8 p-6 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-800"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {t("name")}
               </label>
               <input
@@ -174,7 +174,7 @@ function CommentsSection({ postId }: { postId: string }) {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required={!formData.isAnonymous}
                 disabled={formData.isAnonymous}
               />
@@ -189,7 +189,7 @@ function CommentsSection({ postId }: { postId: string }) {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 required={!formData.isAnonymous}
                 disabled={formData.isAnonymous}
               />
@@ -205,7 +205,7 @@ function CommentsSection({ postId }: { postId: string }) {
                 }
                 className="mr-2"
               />
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-600 dark:text-gray-400">
                 {t("commentAnonymously")}
               </span>
             </label>
@@ -220,7 +220,7 @@ function CommentsSection({ postId }: { postId: string }) {
                 setFormData({ ...formData, comment: e.target.value })
               }
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -241,7 +241,7 @@ function CommentsSection({ postId }: { postId: string }) {
           comments.map((comment, index) => (
             <div
               key={index}
-              className="p-4 bg-white rounded-lg border border-gray-200"
+              className="p-4 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800"
             >
               <div className="flex items-center gap-3 mb-2">
                 <Avatar
@@ -253,17 +253,17 @@ function CommentsSection({ postId }: { postId: string }) {
                   className="w-8 h-8"
                 />
                 <div>
-                  <span className="font-medium text-gray-900">
+                  <span className="font-medium text-gray-900 dark:text-gray-100">
                     {comment.is_anonymous ? t("anonymous") : comment.authorName}
                   </span>
-                  <span className="text-sm text-gray-500 ml-2">
+                  <span className="text-sm text-gray-500 dark:text-gray-500 ml-2">
                     {new Date(comment.createdAt).toLocaleDateString(
                       language === "zh" ? "zh-CN" : "en-US"
                     )}
                   </span>
                 </div>
               </div>
-              <p className="text-gray-700">{comment.content}</p>
+              <p className="text-gray-700 dark:text-gray-300">{comment.content}</p>
             </div>
           ))
         )}
@@ -357,11 +357,11 @@ function AIChatbot({
   };
 
   return (
-    <div className="mt-8 pt-8 border-t border-gray-200">
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
+      <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">
         {t("askAiAboutArticle")}
       </h3>
-      <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4">
         <div className="h-64 overflow-y-auto mb-4 p-2 border border-gray-100 rounded">
           {messages.length === 0 ? (
             <p className="text-gray-500 text-center">{t("askMeAnything")}</p>
@@ -370,16 +370,14 @@ function AIChatbot({
               {messages.map((message, index) => (
                 <div
                   key={index}
-                  className={`flex ${
-                    message.role === "user" ? "justify-end" : "justify-start"
-                  }`}
+                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"
+                    }`}
                 >
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      message.role === "user"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-900"
-                    }`}
+                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.role === "user"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-900"
+                      }`}
                   >
                     {message.content}
                   </div>
@@ -404,7 +402,7 @@ function AIChatbot({
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={t("askQuestionPlaceholder")}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isLoading}
           />
           <button
@@ -591,15 +589,15 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
           {/* Main Content */}
           <div className="flex-1 max-w-full lg:max-w-[900px]">
             <div className="mb-6 lg:mb-8">
-              <h1 className="text-4xl lg:text-5xl font-bold mb-3 lg:mb-4">
+              <h1 className="text-4xl lg:text-5xl font-bold mb-3 lg:mb-4 dark:text-gray-100">
                 {post.title}
               </h1>
               {post.subtitle && (
-                <h2 className="text-lg lg:text-xl text-gray-600 mb-4 italic">
+                <h2 className="text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-4 italic">
                   {post.subtitle}
                 </h2>
               )}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-gray-600 mb-4 lg:mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 text-gray-600 dark:text-gray-300 mb-4 lg:mb-6">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                   <div className="flex items-center gap-2">
                     <Avatar
@@ -608,7 +606,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                       radius="full"
                       className="w-8 h-8"
                     />
-                    <span className="font-medium">
+                    <span className="font-medium dark:text-gray-300">
                       {post.author || "Louis Lu"}
                     </span>
                   </div>
@@ -627,7 +625,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                     <span>5 min read</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm dark:text-gray-300">
                   {toggles.totalViews && (
                     <div className="flex items-center gap-1">
                       <svg
@@ -655,9 +653,8 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                   {toggles.totalLikes && (
                     <button
                       onClick={handleLike}
-                      className={`flex items-center gap-1 transition-colors ${
-                        isLiked ? "text-red-500" : "hover:text-red-500"
-                      }`}
+                      className={`flex items-center gap-1 transition-colors ${isLiked ? "text-red-500" : "hover:text-red-500"
+                        }`}
                     >
                       <svg
                         className="w-4 h-4"
@@ -737,7 +734,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                   {post.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 text-sm rounded-full"
                     >
                       {tag}
                     </span>
@@ -755,9 +752,8 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                     className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 rounded-lg border border-blue-700 shadow-lg text-sm font-semibold text-white hover:text-blue-50 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     <svg
-                      className={`w-5 h-5 ${
-                        isLoading ? "text-blue-200 animate-pulse" : "text-white"
-                      }`}
+                      className={`w-5 h-5 ${isLoading ? "text-blue-200 animate-pulse" : "text-white"
+                        }`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -773,7 +769,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                   </button>
                 </div>
                 {error && (
-                  <div className="mb-2 text-sm text-red-700 bg-red-50 px-4 py-2 rounded-lg border border-red-300 shadow-sm">
+                  <div className="mb-2 text-sm text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg border border-red-300 dark:border-red-900/50 shadow-sm">
                     <div className="flex items-center gap-2">
                       <svg
                         className="w-4 h-4 text-red-500"
@@ -794,17 +790,17 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
                 )}
                 <div
                   id="summary-content"
-                  className="p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border-l-4 border-blue-500 min-h-[80px] flex items-center shadow-sm"
+                  className="p-4 lg:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border-l-4 border-blue-500 min-h-[80px] flex items-center shadow-sm"
                 >
                   {isLoading ? (
                     <div className="flex items-center gap-3 w-full">
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-600 border-t-transparent"></div>
-                      <span className="text-blue-700 font-medium">
+                      <span className="text-blue-700 dark:text-blue-400 font-medium">
                         {t("generatingSummary")}
                       </span>
                     </div>
                   ) : (
-                    <p className="text-base lg:text-lg text-gray-700 leading-relaxed w-full">
+                    <p className="text-base lg:text-lg text-gray-700 dark:text-gray-200 leading-relaxed w-full">
                       {summary}
                     </p>
                   )}
@@ -825,15 +821,14 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
 
         {/* Like Section */}
         {toggles.totalLikes && (
-          <div className="mt-8 pt-8 border-t border-gray-200">
+          <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800">
             <div className="flex items-center justify-center gap-4">
               <button
                 onClick={handleLike}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${
-                  isLiked
-                    ? "bg-red-100 text-red-600 hover:bg-red-200"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                }`}
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-all duration-200 ${isLiked
+                  ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  }`}
               >
                 <svg
                   className="w-6 h-6"

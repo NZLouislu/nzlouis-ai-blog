@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="alternate" hrefLang="en" href={`${baseUrl}${alternatePath}`} />
         <link rel="alternate" hrefLang="zh-CN" href={`${baseUrl}${currentPath}`} />
       </head>
-      <body className="antialiased bg-gradient-to-br from-gray-50 to-gray-100 text-gray-900">{children}</body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

@@ -36,8 +36,8 @@ export default function CategoryContent({ category, posts, language }: CategoryC
       <Navbar />
       <div className="w-full px-6 py-12 mx-auto max-w-[1200px] pt-20">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold mb-4 capitalize">{titleText}</h1>
-          <p className="text-xl text-gray-600">
+          <h1 className="text-4xl font-bold mb-4 capitalize dark:text-gray-100">{titleText}</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300">
             {descriptionText}
           </p>
         </div>

@@ -26,13 +26,83 @@ body {
   font-family: var(--font-sans);
 }
 
-:root { --content-max: 880px; }
-html, body { margin:0; padding:0; }
-.container { max-width: var(--content-max); margin: 0 auto; padding: 24px; }
-.prose { line-height: 1.75; font-size: 16px; }
-.prose h1, .prose h2, .prose h3 { margin-top: 1.6em; margin-bottom: .6em; }
-.prose pre { overflow:auto; padding:16px; border-radius:12px; background:#f6f7f9; }
-.prose code { padding: 2px 6px; border-radius: 6px; background: #f1f3f5; }
-.prose ol { list-style: decimal; padding-left: 1.25rem; }
-.prose ul { list-style: disc; padding-left: 1.25rem; }
-.prose li { margin: 6px 0; }
+:root {
+  --content-max: 880px;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.prose {
+  line-height: 1.75;
+  font-size: 16px;
+}
+
+.prose h1,
+.prose h2,
+.prose h3 {
+  margin-top: 1.6em;
+  margin-bottom: .6em;
+}
+
+.prose pre {
+  overflow: auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #f6f7f9;
+  border: 1px solid #e2e8f0;
+}
+
+.prose code {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f1f3f5;
+  font-size: 0.9em;
+}
+
+.prose pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0;
+  color: inherit;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose pre {
+    background: #0d1117;
+    border-color: #30363d;
+  }
+
+  .prose code {
+    background: #2d333b;
+    color: #adbac7;
+  }
+
+  .prose pre code {
+    background: transparent !important;
+    color: #e6edf3;
+  }
+}
+
+.prose ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+
+.prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+
+.prose li {
+  margin: 6px 0;
+}

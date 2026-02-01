@@ -2,6 +2,8 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 function generateHeadingId(text: string): string {
   return text
@@ -14,7 +16,7 @@ function generateHeadingId(text: string): string {
 
 export default function Markdown({ content }: { content: string }) {
   return (
-    <div className="prose prose-lg max-w-none">
+    <div className="prose prose-lg dark:prose-invert max-w-none">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}
@@ -89,7 +91,7 @@ export default function Markdown({ content }: { content: string }) {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 underline decoration-blue-600 hover:decoration-blue-800 transition-colors"
+                  className="inline-flex items-center gap-1 text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline underline-offset-4 decoration-blue-600/30 hover:decoration-blue-800 transition-colors"
                   {...props}
                 >
                   {children}
@@ -113,11 +115,29 @@ export default function Markdown({ content }: { content: string }) {
             return (
               <a
                 href={href}
-                className="text-blue-600 hover:text-blue-800 underline decoration-blue-600 hover:decoration-blue-800 transition-colors"
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline underline-offset-4 decoration-blue-600/30 hover:decoration-blue-800 transition-colors"
                 {...props}
               >
                 {children}
               </a>
+            );
+          },
+          code: ({ inline, className, children, ...props }: any) => {
+            const match = /language-(\w+)/.exec(className || '');
+            return !inline && match ? (
+              <SyntaxHighlighter
+                style={vscDarkPlus}
+                language={match[1]}
+                PreTag="div"
+                className="rounded-lg my-4"
+                {...props}
+              >
+                {String(children).replace(/\n$/, '')}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
             );
           },
         }}

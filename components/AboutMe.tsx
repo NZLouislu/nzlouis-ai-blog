@@ -20,8 +20,8 @@ export default function AboutMe() {
         </Avatar.Fallback>
       </Avatar.Root>
 
-      <h2 className="text-2xl font-semibold">{t("aboutMeTitle")}</h2>
-      <p className="text-gray-600 text-lg mt-3">{t("aboutMeDescription")}</p>
+      <h2 className="text-2xl font-semibold dark:text-gray-100">{t("aboutMeTitle")}</h2>
+      <p className="text-gray-600 dark:text-gray-400 text-lg mt-3">{t("aboutMeDescription")}</p>
 
       <div className="flex items-center justify-center gap-3 sm:gap-4 mt-6 flex-wrap">
         <a
