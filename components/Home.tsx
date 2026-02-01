@@ -22,13 +22,13 @@ export default function HomePage() {
       <div className="flex flex-col items-center mb-20">
         <Heading
           size="6"
-          className="text-5xl font-bold -mt-10 mb-2 leading-loose bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+          className="text-5xl md:text-6xl font-extrabold -mt-10 mb-3 leading-tight bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent drop-shadow-sm"
         >
           NZLouis&apos; Blog
         </Heading>
         <Text
-          size="3"
-          className="text-xl text-gray-600 dark:text-gray-400 text-center max-w-2xl mb-8"
+          size="4"
+          className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 text-center font-medium max-w-2xl mb-10 italic"
         >
           {language === "zh"
             ? "自强不息，知行合一"
@@ -64,7 +64,7 @@ export default function HomePage() {
                     {totalStats.totalViews.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">Total Views</p>
+                <p className="text-gray-600 dark:text-gray-300">Total Views</p>
               </div>
 
               <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-800">
@@ -86,7 +86,7 @@ export default function HomePage() {
                     {totalStats.totalLikes.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">Total Likes</p>
+                <p className="text-gray-600 dark:text-gray-300">Total Likes</p>
               </div>
 
               <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-800">
@@ -108,7 +108,7 @@ export default function HomePage() {
                     {totalStats.totalComments.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">Total Comments</p>
+                <p className="text-gray-600 dark:text-gray-300">Total Comments</p>
               </div>
 
               <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-800">
@@ -130,7 +130,7 @@ export default function HomePage() {
                     {totalStats.totalAiSummaries.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">AI Summaries</p>
+                <p className="text-gray-600 dark:text-gray-300">AI Summaries</p>
               </div>
 
               <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 text-center border border-gray-200 dark:border-gray-800">
@@ -152,7 +152,7 @@ export default function HomePage() {
                     {totalStats.totalAiQuestions.toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-600 dark:text-gray-400">AI Questions</p>
+                <p className="text-gray-600 dark:text-gray-300">AI Questions</p>
               </div>
             </>
           )}
