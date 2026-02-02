@@ -15,7 +15,7 @@ tags:
   - 机器人
 lang: "zh"
 URL: "/2026/01/16/ai-dev-future-from-road-to-civilization"
-categories: [AI, PHILOSOPHY]
+categories: [AI, ROBOTICS]
 ---
 
 # AI 时代开发者的命运与出路：从修路到建设文明

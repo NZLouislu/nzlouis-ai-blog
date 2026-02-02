@@ -15,7 +15,7 @@ tags:
   - Robotics
 lang: "en"
 URL: "/en/2026/01/16/ai-dev-future-from-road-to-civilization"
-categories: [AI, PHILOSOPHY]
+categories: [AI, ROBOTICS]
 ---
 
 # The Fate and Future of Developers in the AI Era: From Road Building to Building Civilizations
