@@ -73,10 +73,10 @@ As AI capabilities improve, the value of professionals will shift. We will spend
 
 That means the most valuable people will not just be the fastest executors. They will be the ones who can:
 
-1. interpret what matters most;
-2. connect technical details to business reality;
-3. guide teams toward a shared understanding;
-4. prevent confusion before it becomes rework.
+1. Interpret what matters most;
+2. Connect technical details to business reality;
+3. Guide teams toward a shared understanding;
+4. Prevent confusion before it becomes rework.
 
 In other words, the future of work will reward people who can make complexity intelligible.
 
