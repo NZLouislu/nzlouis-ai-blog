@@ -12,7 +12,7 @@ tags:
     "Professional Development",
     "Leadership",
   ]
-author: "Louis NZ"
+author: "Louis Lu"
 image: "/img/engineer_hologram_visuals.png"
 published: true
 ---
