@@ -24,6 +24,7 @@ export default function Markdown({ content }: { content: string }) {
           img: ({ src, alt }) => {
             if (typeof src === 'string') {
               return (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={src} alt={alt || ''} className="w-full h-auto my-4 rounded-lg shadow-md" />
               );
             }

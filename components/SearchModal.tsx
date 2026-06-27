@@ -27,22 +27,15 @@ export default function SearchModal({
 }: SearchModalProps) {
   const { language } = useLanguageStore();
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<Post[]>([]);
 
-  useEffect(() => {
-    if (query.trim() === "") {
-      setResults([]);
-      return;
-    }
 
-    const filteredPosts = posts.filter(
-      (post: Post) =>
-        post.title.toLowerCase().includes(query.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(query.toLowerCase())
-    );
-
-    setResults(filteredPosts.slice(0, 10)); // Limit to 10 results
-  }, [query, posts]);
+  const results = query.trim() === ""
+    ? []
+    : posts.filter(
+        (post: Post) =>
+          post.title.toLowerCase().includes(query.toLowerCase()) ||
+          post.excerpt.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 10);
 
   useEffect(() => {
     if (isOpen) {

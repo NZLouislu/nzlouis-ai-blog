@@ -425,7 +425,7 @@ interface BlogPostClientProps {
 export default function BlogPostClient({ post }: BlogPostClientProps) {
   const { language } = useLanguageStore();
   const { t } = useTranslation();
-  const [summary, setSummary] = useState(post?.description || "");
+  const [summary, setSummary] = useState(post?.description || post?.excerpt || "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [isLiked, setIsLiked] = useState(false);
@@ -446,7 +446,7 @@ export default function BlogPostClient({ post }: BlogPostClientProps) {
     ai_questions: 0,
     ai_summaries: 0,
   };
-  const originalSummary = post?.description || "";
+  const originalSummary = post?.description || post?.excerpt || "";
 
   useEffect(() => {
     fetchToggles();

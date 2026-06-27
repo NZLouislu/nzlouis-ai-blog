@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 interface TocItem {
   id: string;
@@ -13,37 +13,28 @@ interface TableOfContentsProps {
 }
 
 export default function TableOfContents({ content }: TableOfContentsProps) {
-  const [headings, setHeadings] = useState<TocItem[]>([]);
   const [activeHeading, setActiveHeading] = useState<string>("");
   const [tocHeight, setTocHeight] = useState<string>("max-h-96");
 
-  useEffect(() => {
-    const extractHeadings = (content: string): TocItem[] => {
-      const headingRegex = /^(#{1,6})\s+(.+)$/gm;
-      const headings: TocItem[] = [];
-      let match;
+  const headings = useMemo<TocItem[]>(() => {
+    const headingRegex = /^(#{1,6})\s+(.+)$/gm;
+    const items: TocItem[] = [];
+    let match;
 
-      while ((match = headingRegex.exec(content)) !== null) {
-        const level = match[1].length;
-        const text = match[2].trim();
-        const id = text
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, "")
-          .replace(/\s+/g, "-")
-          .replace(/-+/g, "-")
-          .trim();
+    while ((match = headingRegex.exec(content)) !== null) {
+      const level = match[1].length;
+      const text = match[2].trim();
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
 
-        headings.push({
-          id,
-          text,
-          level,
-        });
-      }
+      items.push({ id, text, level });
+    }
 
-      return headings;
-    };
-
-    setHeadings(extractHeadings(content));
+    return items;
   }, [content]);
 
   useEffect(() => {

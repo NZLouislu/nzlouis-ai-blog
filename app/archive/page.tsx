@@ -22,11 +22,7 @@ export default function ArchivePage() {
     });
   }, [language, fetchPosts]);
 
-  // Group posts by year with performance logging
   const { postsByYear, sortedYears } = useMemo(() => {
-    console.log('Archive: Computing posts grouping for', posts.length, 'posts');
-    const startTime = performance.now();
-
     const grouped = posts.reduce((acc, post) => {
       const year = new Date(post.createdAt).getFullYear();
       if (!acc[year]) {
@@ -39,9 +35,6 @@ export default function ArchivePage() {
     const sorted = Object.keys(grouped)
       .map(Number)
       .sort((a, b) => b - a);
-
-    const endTime = performance.now();
-    console.log(`Archive: Posts grouping took ${endTime - startTime}ms`);
 
     return { postsByYear: grouped, sortedYears: sorted };
   }, [posts]);

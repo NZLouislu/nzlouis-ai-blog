@@ -106,3 +106,15 @@ body {
 .prose li {
   margin: 6px 0;
 }
+
+.prose hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .prose hr {
+    border-color: #30363d;
+  }
+}

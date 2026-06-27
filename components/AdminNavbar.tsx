@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "../lib/store/auth";
 import { getAllUsers } from "../lib/auth/users";
@@ -16,13 +16,11 @@ export default function AdminNavbar() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, selectedUserId, selectUser, logout, isAdmin } = useAuthStore();
-  const [users, setUsers] = useState<Array<{ id: string; name: string; username: string }>>([]);
-
-  useEffect(() => {
-    if (isAdmin()) {
-      setUsers(getAllUsers().filter(u => u.role === 'user'));
-    }
-  }, [user, isAdmin]);
+  const users = useMemo(
+    () => (isAdmin() ? getAllUsers().filter(u => u.role === 'user') : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [user]
+  );
 
   const navigation: NavItem[] = [
     {
