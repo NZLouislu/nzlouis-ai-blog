@@ -10,12 +10,8 @@ function getPostsDirectory(language: 'en' | 'zh' = 'en') {
 function getPostSlugs(language: 'en' | 'zh' = 'en') {
   try {
     const postsDirectory = getPostsDirectory(language);
-    console.log('Posts directory for', language, ':', postsDirectory);
     const files = fs.readdirSync(postsDirectory);
-    console.log('Files in directory:', files);
-    const slugs = files.filter((file: string) => file.endsWith(".md"));
-    console.log('Filtered slugs:', slugs);
-    return slugs;
+    return files.filter((file: string) => file.endsWith(".md"));
   } catch (error) {
     console.error("Error reading posts directory:", error);
     return [];
@@ -27,8 +23,6 @@ export function getPostBySlug(slug: string, language: 'en' | 'zh' = 'en'): Post 
     const realSlug = slug.replace(/\.md$/, "");
     const postsDirectory = getPostsDirectory(language);
     const fullPath = path.join(postsDirectory, `${realSlug}.md`);
-    console.log('Looking for post:', fullPath);
-    console.log('Path exists:', fs.existsSync(fullPath));
 
     if (!fs.existsSync(fullPath)) {
       return null;

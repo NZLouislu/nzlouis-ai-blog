@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { db } from "@/lib/db";
+import { postStats, dailyStats } from "@/lib/db/schema";
+import { eq, and } from "drizzle-orm";
 import { listPublished } from "@/lib/posts";
-
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,48 +27,44 @@ export async function POST(request: NextRequest) {
     const results = [];
 
     for (const post of zhPosts) {
-      const { data: existingStats } = await supabase
-        .from("post_stats")
-        .select("id")
-        .eq("post_id", post.id)
-        .eq("language", "zh")
-        .single();
+      const existingStats = await db
+        .select()
+        .from(postStats)
+        .where(
+          and(eq(postStats.postId, post.id), eq(postStats.language, "zh"))
+        )
+        .limit(1)
+        .then((rows) => rows[0]);
 
       if (!existingStats) {
-        const { data: newStats, error: statsError } = await supabase
-          .from("post_stats")
-          .insert({
-            post_id: post.id,
-            title: post.title,
-            views: Math.floor(Math.random() * 200) + 50,
-            likes: Math.floor(Math.random() * 30) + 5,
-            ai_questions: Math.floor(Math.random() * 15) + 1,
-            ai_summaries: Math.floor(Math.random() * 20) + 2,
-            language: "zh",
-          })
-          .select()
-          .single();
+        try {
+          const [newStats] = await db
+            .insert(postStats)
+            .values({
+              postId: post.id,
+              title: post.title,
+              views: Math.floor(Math.random() * 200) + 50,
+              likes: Math.floor(Math.random() * 30) + 5,
+              aiQuestions: Math.floor(Math.random() * 15) + 1,
+              aiSummaries: Math.floor(Math.random() * 20) + 2,
+              language: "zh",
+            })
+            .returning();
 
-        if (statsError) {
-          console.error(`Failed to create stats for ${post.id}:`, statsError);
-          results.push({
-            post_id: post.id,
-            status: "error",
-            error: statsError.message,
-          });
-        } else {
           results.push({ post_id: post.id, status: "created", data: newStats });
+        } catch (err: any) {
+          results.push({ post_id: post.id, status: "error", error: err.message });
         }
 
         const today = new Date().toISOString().split("T")[0];
-        await supabase.from("daily_stats").insert({
-          post_id: post.id,
+        await db.insert(dailyStats).values({
+          postId: post.id,
           date: today,
+          language: "zh",
           views: Math.floor(Math.random() * 20) + 5,
           likes: Math.floor(Math.random() * 5) + 1,
-          ai_questions: Math.floor(Math.random() * 3),
-          ai_summaries: Math.floor(Math.random() * 4) + 1,
-          language: "zh",
+          aiQuestions: Math.floor(Math.random() * 3),
+          aiSummaries: Math.floor(Math.random() * 4) + 1,
         });
       } else {
         results.push({ post_id: post.id, status: "exists" });

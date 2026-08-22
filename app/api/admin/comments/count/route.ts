@@ -1,14 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { db } from "@/lib/db";
+import { comments } from "@/lib/db/schema";
+import { eq, and, count } from "drizzle-orm";
 import { listPublished } from "@/lib/posts";
-
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET() {
   try {
-    // Get all published posts from both languages
     const enPosts = listPublished("en");
     const zhPosts = listPublished("zh");
 
@@ -17,32 +14,29 @@ export async function GET() {
       ...zhPosts.map((post) => ({ ...post, language: "zh" })),
     ];
 
-    console.log(
-      `Found ${enPosts.length} English posts and ${zhPosts.length} Chinese posts`
-    );
-
     const postsWithCommentCounts = await Promise.all(
       allPosts.map(async (post) => {
-        const { count: commentCount } = await supabase
-          .from("comments")
-          .select("*", { count: "exact", head: true })
-          .eq("postId", `${post.id}-${post.language}`)
-          .eq("language", post.language);
+        const result = await db
+          .select({ count: count() })
+          .from(comments)
+          .where(
+            and(
+              eq(comments.postId, post.id),
+              eq(comments.language, post.language)
+            )
+          )
+          .then((rows) => rows[0]?.count || 0);
 
         return {
           id: post.id,
           post_id: post.id,
           title: post.title,
           language: post.language,
-          _count: { comments: commentCount || 0 },
+          _count: { comments: result },
         };
       })
     );
 
-    console.log(
-      "Posts with comment counts:",
-      JSON.stringify(postsWithCommentCounts, null, 2)
-    );
     return NextResponse.json(postsWithCommentCounts);
   } catch (error) {
     console.error("Failed to fetch comment counts:", error);

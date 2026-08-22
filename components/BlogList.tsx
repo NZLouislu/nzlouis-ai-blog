@@ -42,13 +42,12 @@ export default function BlogList({ posts: initialPosts }: BlogListProps) {
   }, [fetchToggles, initialPosts, language]);
 
   useEffect(() => {
-    const postsToFetch = posts.filter((post) => !postStats[post.id]);
-    if (postsToFetch.length > 0) {
-      postsToFetch.forEach((post) => {
+    posts.forEach((post) => {
+      if (!useStatsStore.getState().postStats[post.id]) {
         fetchPostStats(post.id);
-      });
-    }
-  }, [posts, postStats, fetchPostStats]);
+      }
+    });
+  }, [posts, fetchPostStats]);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">

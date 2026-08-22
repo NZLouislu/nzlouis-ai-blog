@@ -37,10 +37,10 @@ export default function BlogCard({
 
   useEffect(() => {
     fetchToggles();
-    if (!postStats[postId]) {
+    if (!useStatsStore.getState().postStats[postId]) {
       fetchPostStats(postId);
     }
-  }, [fetchToggles, fetchPostStats, postId, postStats]);
+  }, [fetchToggles, fetchPostStats, postId]);
 
   const stats = postStats[postId];
 

@@ -1,43 +1,41 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
+import { postStats } from "@/lib/db/schema";
+import { sql } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const statsByLanguage = await prisma.postStat.groupBy({
-      by: ['language'],
-      _sum: {
-        views: true,
-        likes: true,
-      },
-      _count: {
-        id: true,
-      },
-    });
+    const statsByLanguage = await db
+      .select({
+        language: postStats.language,
+        count: sql<number>`count(*)::int`,
+        views: sql<number>`coalesce(sum(${postStats.views}), 0)::int`,
+        likes: sql<number>`coalesce(sum(${postStats.likes}), 0)::int`,
+      })
+      .from(postStats)
+      .groupBy(postStats.language);
 
-    const overview = {
+    const overview: Record<string, { count: number; views: number; likes: number }> = {
       en: { count: 0, views: 0, likes: 0 },
       zh: { count: 0, views: 0, likes: 0 },
     };
 
-    statsByLanguage.forEach((stat) => {
-      if (stat.language === 'en') {
-        overview.en.count = stat._count.id;
-        overview.en.views = stat._sum.views || 0;
-        overview.en.likes = stat._sum.likes || 0;
-      } else if (stat.language === 'zh') {
-        overview.zh.count = stat._count.id;
-        overview.zh.views = stat._sum.views || 0;
-        overview.zh.likes = stat._sum.likes || 0;
+    for (const stat of statsByLanguage) {
+      if (stat.language === "en" || stat.language === "zh") {
+        overview[stat.language] = {
+          count: stat.count,
+          views: stat.views,
+          likes: stat.likes,
+        };
       }
-    });
+    }
 
     return NextResponse.json(overview);
   } catch (error) {
-    console.error('Failed to fetch overview:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    console.error("Failed to fetch overview:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

@@ -332,7 +332,7 @@ export default function AdminDashboard() {
                     className="bg-yellow-50 rounded-lg p-4 text-center hover:bg-yellow-100 transition-colors"
                   >
                     <h3 className="text-sm sm:text-base font-medium text-yellow-900">
-                      Supabase Database
+                      Database
                     </h3>
                     <p className="text-xs sm:text-sm text-yellow-700">
                       View database data

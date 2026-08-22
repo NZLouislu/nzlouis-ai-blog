@@ -57,6 +57,8 @@ interface StatsState {
   ) => Promise<void>;
 }
 
+const fetchedOrInflight = new Set<string>();
+
 export const useStatsStore = create<StatsState>((set, get) => ({
   totalStats: {
     totalViews: 0,
@@ -231,6 +233,8 @@ export const useStatsStore = create<StatsState>((set, get) => ({
   },
 
   fetchPostStats: async (postId) => {
+    if (fetchedOrInflight.has(postId)) return;
+    fetchedOrInflight.add(postId);
     try {
       const { language } = useLanguageStore.getState();
       const response = await fetch(
@@ -239,8 +243,11 @@ export const useStatsStore = create<StatsState>((set, get) => ({
       if (response.ok) {
         const stats = await response.json();
         get().setPostStats(postId, stats);
+      } else {
+        fetchedOrInflight.delete(postId);
       }
     } catch (error) {
+      fetchedOrInflight.delete(postId);
       console.error("Failed to fetch post stats:", error);
     }
   },

@@ -1,47 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { db } from "@/lib/db";
+import { postStats, comments, dailyStats } from "@/lib/db/schema";
+import { eq, desc, count, and, gte, lt } from "drizzle-orm";
+import {
+  getAllPostStats,
+  getTotalStats,
+} from "@/lib/db/queries";
 import { getBySlug, listPublished } from "@/lib/posts";
 
 export async function GET(request: NextRequest) {
-  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
-    console.error("Supabase environment variables not configured");
-    return NextResponse.json(
-      { error: "Server configuration error: Missing Supabase credentials" },
-      { status: 500 }
-    );
-  }
-
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   try {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get("language");
     const aggregate = searchParams.get("aggregate");
 
     if (aggregate === "all") {
-      let query = supabase.from("post_stats").select("views, likes");
-
-      if (language) {
-        query = query.eq("language", language);
-      }
-
-      const { data: stats, error: totalError } = await query;
-
-      if (totalError) {
-        console.error("Error fetching total stats:", totalError);
-        return NextResponse.json(
-          { error: "Failed to fetch total stats" },
-          { status: 500 }
-        );
-      }
+      const stats = await getAllPostStats(language || undefined);
 
       const totals = {
         totalViews:
-          stats?.reduce((sum, stat) => sum + (stat.views || 0), 0) || 0,
+          stats.reduce((sum, stat) => sum + (stat.views || 0), 0) || 0,
         totalLikes:
-          stats?.reduce((sum, stat) => sum + (stat.likes || 0), 0) || 0,
+          stats.reduce((sum, stat) => sum + (stat.likes || 0), 0) || 0,
       };
 
       return NextResponse.json(totals);
@@ -54,18 +34,19 @@ export async function GET(request: NextRequest) {
       }
 
       const posts = listPublished(language as "en" | "zh");
-      const postStats = await Promise.all(
+      const postStatsResult = await Promise.all(
         posts.map(async (post) => {
-          const { data: stat, error: statError } = await supabase
-            .from("post_stats")
-            .select("views, likes")
-            .eq("post_id", post.id)
-            .eq("language", language)
-            .single();
-
-          if (statError && statError.code !== "PGRST116") {
-            console.error("Error fetching post stats:", statError);
-          }
+          const stat = await db
+            .select()
+            .from(postStats)
+            .where(
+              and(
+                eq(postStats.postId, post.id),
+                eq(postStats.language, language)
+              )
+            )
+            .limit(1)
+            .then((rows) => rows[0]);
 
           return {
             slug: post.slug,
@@ -75,110 +56,52 @@ export async function GET(request: NextRequest) {
         })
       );
 
-      return NextResponse.json(postStats);
+      return NextResponse.json(postStatsResult);
     } else {
-      // Get total stats
-      const { data: totalStats, error: totalError } = await supabase
-        .from("post_stats")
-        .select("views, likes, ai_questions, ai_summaries");
+      const totalStatsResult = await getTotalStats();
 
-      if (totalError) {
-        console.error("Error fetching total stats:", totalError);
-        return NextResponse.json(
-          { error: "Failed to fetch total stats" },
-          { status: 500 }
-        );
-      }
-
-      const totals = {
-        totalViews:
-          totalStats?.reduce((sum, stat) => sum + (stat.views || 0), 0) || 0,
-        totalLikes:
-          totalStats?.reduce((sum, stat) => sum + (stat.likes || 0), 0) || 0,
-        totalAiQuestions:
-          totalStats?.reduce(
-            (sum, stat) => sum + (stat.ai_questions || 0),
-            0
-          ) || 0,
-        totalAiSummaries:
-          totalStats?.reduce(
-            (sum, stat) => sum + (stat.ai_summaries || 0),
-            0
-          ) || 0,
-      };
-
-      const { count: totalComments } = await supabase
-        .from("comments")
-        .select("*", { count: "exact", head: true });
-
-      const enPosts = listPublished("en");
-      const zhPosts = listPublished("zh");
-      const totalPosts = enPosts.length + zhPosts.length;
-
-      const totalsWithCommentsAndPosts = {
-        ...totals,
-        totalComments: totalComments || 0,
-        totalPosts,
-        totalPostsEnglish: enPosts.length,
-        totalPostsChinese: zhPosts.length,
-      };
-
-      // Get individual post stats with language separation
-      const { data: postStats, error: postError } = await supabase
-        .from("post_stats")
-        .select("*")
-        .order("language", { ascending: true });
-
-      if (postError) {
-        console.error("Error fetching post stats:", postError);
-        return NextResponse.json(
-          { error: "Failed to fetch post stats" },
-          { status: 500 }
-        );
-      }
+      const allPostStats = await db
+        .select()
+        .from(postStats)
+        .orderBy(postStats.language);
 
       const individualStats =
-        postStats?.map((stat) => {
+        allPostStats.map((stat) => {
           const post =
             stat.language === "zh"
-              ? getBySlug(stat.post_id, "zh")
-              : getBySlug(stat.post_id, "en");
+              ? getBySlug(stat.postId, "zh")
+              : getBySlug(stat.postId, "en");
           return {
-            postId: stat.post_id,
+            postId: stat.postId,
             title: post ? post.title : "Unknown Post",
             language: stat.language,
             views: stat.views || 0,
             likes: stat.likes || 0,
-            aiQuestions: stat.ai_questions || 0,
-            aiSummaries: stat.ai_summaries || 0,
+            aiQuestions: stat.aiQuestions || 0,
+            aiSummaries: stat.aiSummaries || 0,
           };
         }) || [];
 
       const individualStatsWithComments = await Promise.all(
         individualStats.map(async (stat) => {
-          const { count: commentCount } = await supabase
-            .from("comments")
-            .select("*", { count: "exact", head: true })
-            .eq("post_id", stat.postId);
+          const commentCount = await db
+            .select({ count: count() })
+            .from(comments)
+            .where(eq(comments.postId, stat.postId))
+            .then((rows) => rows[0]?.count || 0);
 
           return {
             ...stat,
-            comments: commentCount || 0,
+            comments: commentCount,
           };
         })
       );
 
-      // Get daily stats for time-based analysis with language separation
-      const { data: dailyStats, error: dailyError } = await supabase
-        .from("daily_stats")
-        .select("*")
-        .order("date", { ascending: false })
-        .order("language", { ascending: true })
-        .limit(60); // Increased limit to account for language separation
-
-      if (dailyError) {
-        console.error("Error fetching daily stats:", dailyError);
-      }
+      const dailyResult = await db
+        .select()
+        .from(dailyStats)
+        .orderBy(desc(dailyStats.date), dailyStats.language)
+        .limit(60);
 
       interface DailyAggregate {
         date: string;
@@ -190,15 +113,15 @@ export async function GET(request: NextRequest) {
         aiSummaries: number;
       }
 
-      const dailyAggregates =
-        dailyStats?.reduce((acc: Record<string, DailyAggregate>, stat) => {
-          const date = stat.date.split("T")[0];
+      const dailyAggregates = dailyResult.reduce(
+        (acc: Record<string, DailyAggregate>, stat) => {
+          const date = stat.date;
           const key = `${date}-${stat.language}`;
-          
+
           if (!acc[key]) {
             acc[key] = {
               date,
-              language: stat.language,
+              language: stat.language!,
               views: 0,
               likes: 0,
               comments: 0,
@@ -208,14 +131,17 @@ export async function GET(request: NextRequest) {
           }
           acc[key].views += stat.views || 0;
           acc[key].likes += stat.likes || 0;
-          acc[key].aiQuestions += stat.ai_questions || 0;
-          acc[key].aiSummaries += stat.ai_summaries || 0;
+          acc[key].aiQuestions += stat.aiQuestions || 0;
+          acc[key].aiSummaries += stat.aiSummaries || 0;
           return acc;
-        }, {} as Record<string, DailyAggregate>) || {};
+        },
+        {} as Record<string, DailyAggregate>
+      );
 
       const dailyStatsArray = Object.values(dailyAggregates).sort(
         (a: DailyAggregate, b: DailyAggregate) => {
-          const dateCompare = new Date(b.date).getTime() - new Date(a.date).getTime();
+          const dateCompare =
+            new Date(b.date).getTime() - new Date(a.date).getTime();
           if (dateCompare === 0) {
             return a.language.localeCompare(b.language);
           }
@@ -225,21 +151,41 @@ export async function GET(request: NextRequest) {
 
       const dailyStatsWithComments = await Promise.all(
         dailyStatsArray.map(async (dayStat) => {
-          const { count: dayComments } = await supabase
-            .from("comments")
-            .select("*", { count: "exact", head: true })
-            .gte("created_at", `${dayStat.date}T00:00:00.000Z`)
-            .lt("created_at", `${dayStat.date}T23:59:59.999Z`);
+          const dayComments = await db
+            .select({ count: count() })
+            .from(comments)
+            .where(
+              and(
+                gte(
+                  comments.createdAt,
+                  new Date(`${dayStat.date}T00:00:00.000Z`)
+                ),
+                lt(
+                  comments.createdAt,
+                  new Date(`${dayStat.date}T23:59:59.999Z`)
+                )
+              )
+            )
+            .then((rows) => rows[0]?.count || 0);
 
           return {
             ...dayStat,
-            comments: dayComments || 0,
+            comments: dayComments,
           };
         })
       );
 
       return NextResponse.json({
-        totals: totalsWithCommentsAndPosts,
+        totals: {
+          totalViews: totalStatsResult.totalViews,
+          totalLikes: totalStatsResult.totalLikes,
+          totalAiQuestions: totalStatsResult.totalAiQuestions,
+          totalAiSummaries: totalStatsResult.totalAiSummaries,
+          totalComments: totalStatsResult.totalComments,
+          totalPosts: totalStatsResult.totalPosts,
+          totalPostsEnglish: totalStatsResult.totalPostsEnglish,
+          totalPostsChinese: totalStatsResult.totalPostsChinese,
+        },
         individualStats: individualStatsWithComments,
         dailyStats: dailyStatsWithComments,
       });

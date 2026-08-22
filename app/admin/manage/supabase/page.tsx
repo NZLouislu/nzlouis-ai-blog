@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AuthCheck from "../auth-check";
 import AdminNavbar from "../../../../components/AdminNavbar";
-import { useSupabaseStore } from "../../../../lib/stores/supabaseStore";
 import {
   Card,
   CardContent,
@@ -12,38 +11,58 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-interface Comment {
-  id: string;
-  post_id: string;
-  name: string | null;
-  email: string | null;
-  comment: string;
-  is_anonymous: boolean;
-  created_at: string;
-  language: string;
+interface TableInfo {
+  name: string;
+  count: number | null;
+  data: Record<string, unknown>[];
 }
 
+const tableNames = ["comments", "post_stats", "daily_stats", "feature_toggles", "users", "posts"];
 
-export default function SupabaseDashboard() {
-  const {
-    tableData,
-    selectedTable,
-    isLoading,
-    setSelectedTable,
-    fetchTableData,
-    fetchAllTableCounts,
-  } = useSupabaseStore();
-
-  const tables = ["comments", "post_stats", "daily_stats", "feature_toggles"];
+export default function DatabaseDashboard() {
+  const [tables, setTables] = useState<TableInfo[]>([]);
+  const [selectedTable, setSelectedTable] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [tableData, setTableData] = useState<Record<string, TableInfo>>({});
 
   useEffect(() => {
-    fetchAllTableCounts();
-  }, [fetchAllTableCounts]);
+    tableNames.forEach(async (name) => {
+      try {
+        const res = await fetch(`/api/admin/database?table=${name}&action=count`);
+        if (res.ok) {
+          const data = await res.json();
+          setTables(prev => {
+            const existing = prev.find(t => t.name === name);
+            if (existing) {
+              return prev.map(t => t.name === name ? { ...t, count: data.count } : t);
+            }
+            return [...prev, { name, count: data.count, data: [] }];
+          });
+        }
+      } catch {
+        setTables(prev => [...prev, { name, count: 0, data: [] }]);
+      }
+    });
+  }, []);
 
-  const handleTableSelect = (table: string) => {
-    setSelectedTable(table);
-    if (!tableData[table]?.data) {
-      fetchTableData(table);
+  const handleTableSelect = async (tableName: string) => {
+    setSelectedTable(tableName);
+    if (tableData[tableName]?.data?.length > 0) return;
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/admin/database?table=${tableName}&action=all`);
+      if (res.ok) {
+        const data = await res.json();
+        setTableData(prev => ({
+          ...prev,
+          [tableName]: { name: tableName, count: data.data?.length || 0, data: data.data || [] }
+        }));
+      }
+    } catch {
+      console.error("Failed to fetch table data");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,30 +75,30 @@ export default function SupabaseDashboard() {
             <div className="bg-white shadow rounded-lg">
               <div className="px-6 py-4 border-b border-gray-200">
                 <h2 className="text-lg font-medium text-gray-900">
-                  Supabase Database Dashboard
+                  Database Dashboard
                 </h2>
                 <p className="mt-1 text-sm text-gray-600">
                   View and analyze database tables
                 </p>
               </div>
               <div className="px-6 py-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
                   {tables.map((table) => (
                     <Card
-                      key={table}
+                      key={table.name}
                       className={`cursor-pointer transition-colors ${
-                        selectedTable === table
+                        selectedTable === table.name
                           ? "ring-2 ring-blue-500"
                           : "hover:bg-gray-50"
                       }`}
-                      onClick={() => handleTableSelect(table)}
+                      onClick={() => handleTableSelect(table.name)}
                     >
                       <CardHeader className="pb-2">
                         <CardTitle className="text-lg capitalize">
-                          {table.replace("_", " ")}
+                          {table.name.replace("_", " ")}
                         </CardTitle>
                         <CardDescription>
-                          Records: {tableData[table]?.count ?? "Loading..."}
+                          Records: {table.count ?? "Loading..."}
                         </CardDescription>
                       </CardHeader>
                     </Card>
@@ -91,13 +110,13 @@ export default function SupabaseDashboard() {
                     <CardHeader>
                       <CardTitle>Table: {selectedTable}</CardTitle>
                       <CardDescription>
-                        {tableData[selectedTable]?.count} records total
+                        {tableData[selectedTable]?.count || 0} records total
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       {isLoading ? (
                         <div className="text-center py-4">Loading data...</div>
-                      ) : tableData[selectedTable]?.data ? (
+                      ) : tableData[selectedTable]?.data?.length ? (
                         <div className="overflow-auto max-h-96">
                           <table className="w-full border-collapse border border-gray-300">
                             <thead>
@@ -107,7 +126,7 @@ export default function SupabaseDashboard() {
                                 ).map((key) => (
                                   <th
                                     key={key}
-                                    className="border border-gray-300 px-4 py-2 text-left"
+                                    className="border border-gray-300 px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase"
                                   >
                                     {key}
                                   </th>
@@ -122,12 +141,12 @@ export default function SupabaseDashboard() {
                                       (value, cellIndex) => (
                                         <td
                                           key={cellIndex}
-                                          className="border border-gray-300 px-4 py-2"
+                                          className="border border-gray-300 px-4 py-2 text-sm"
                                         >
                                           {typeof value === "object" &&
                                           value !== null
                                             ? JSON.stringify(value)
-                                            : String(value || "")}
+                                            : String(value ?? "")}
                                         </td>
                                       )
                                     )}
@@ -138,73 +157,10 @@ export default function SupabaseDashboard() {
                           </table>
                         </div>
                       ) : (
-                        <div className="text-center py-4">
+                        <div className="text-center py-4 text-gray-500">
                           No data available
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
-                )}
-
-                {selectedTable === "comments" && tableData.comments?.data && (
-                  <Card className="mt-6">
-                    <CardHeader>
-                      <CardTitle>Comments Analysis</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <h4 className="font-semibold mb-2">
-                            Comments by Post
-                          </h4>
-                          {Object.entries(
-                            (
-                              tableData.comments.data as unknown as Comment[]
-                            ).reduce((acc, comment) => {
-                              const postId = String(comment.post_id);
-                              acc[postId] = (acc[postId] || 0) + 1;
-                              return acc;
-                            }, {} as Record<string, number>)
-                          ).map(([postId, count]) => (
-                            <div key={postId} className="text-sm mb-1">
-                              <span className="font-mono text-xs">
-                                {postId}
-                              </span>
-                              : {count} comments
-                            </div>
-                          ))}
-                        </div>
-                        <div>
-                          <h4 className="font-semibold mb-2">
-                            Recent Comments
-                          </h4>
-                          {(tableData.comments.data as unknown as Comment[])
-                            .sort(
-                              (a, b) =>
-                                new Date(b.created_at).getTime() -
-                                new Date(a.created_at).getTime()
-                            )
-                            .slice(0, 5)
-                            .map((comment, index) => (
-                              <div
-                                key={index}
-                                className="text-sm mb-2 p-2 bg-gray-50 rounded"
-                              >
-                                <div className="font-medium">
-                                  {String(comment.name || "Anonymous")}
-                                </div>
-                                <div className="text-gray-600 truncate">
-                                  {String(comment.comment)}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  {new Date(
-                                    comment.created_at
-                                  ).toLocaleDateString()}
-                                </div>
-                              </div>
-                            ))}
-                        </div>
-                      </div>
                     </CardContent>
                   </Card>
                 )}

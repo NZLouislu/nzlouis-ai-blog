@@ -1,6 +1,7 @@
 import "./globals.css";
 import { ReactNode } from "react";
 import { headers } from 'next/headers';
+import LanguageSync from "@/components/LanguageSync";
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const h = await headers();
@@ -18,7 +19,10 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <link rel="alternate" hrefLang="en" href={`${baseUrl}${alternatePath}`} />
         <link rel="alternate" hrefLang="zh-CN" href={`${baseUrl}${currentPath}`} />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased" suppressHydrationWarning>
+        <LanguageSync />
+        {children}
+      </body>
     </html>
   );
 }
